@@ -13,10 +13,4 @@ public class HolaController {
 
         return "Hola mundooo";
     }
-
-    @GetMapping("/admin/panel")
-    public String devolverTextoAdmin(){
-
-        return "admin";
-    }
 }
