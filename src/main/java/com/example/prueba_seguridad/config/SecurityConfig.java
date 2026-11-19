@@ -3,6 +3,7 @@ package com.example.prueba_seguridad.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -15,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -34,6 +36,11 @@ public class SecurityConfig {
                 .roles("VENDEDOR") // Sin el prefijo ROLE_
                 .build();
 
+        UserDetails bodega = User.withUsername("bodega")
+                .password(passwordEncoder.encode("1234"))
+                .roles("BODEGA")
+                .build();
+
         return new InMemoryUserDetailsManager(admin, vendedor);
     }
 
@@ -41,8 +48,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // 1. /admin/** solo para quien tenga el rol ADMIN
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         // 2. Cualquier otra ruta, para cualquier usuario autenticado
                         .anyRequest().authenticated()
                 )
